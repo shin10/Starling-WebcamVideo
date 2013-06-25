@@ -10,8 +10,10 @@ As "WebcamVideo" inherits from "Quad", you can give it a color. For each pixel, 
 
 Uploading textures to the GPU is very expensive. This may be no problem on desktop computers but it is a big problem on most mobile devices. Therefore it is very important to chose the right resolution and texture size, as well as the method for drawing and uploading. If you use Flash 11.8 / AIR 3.8 (-swf-version=21) RectangleTextures are supported if necessary. Versions below will always fall back to Textue, so make sure to use the cropping rect parameter to avoid the upload of unused bytes.
 
-Note: Unfortunatelly you may have to use a strategy with DRAW_BITMAPDATA or UPLOAD_FROM_BYTEARRAY to keep the image centered, using the cropping rect if you use a regular POT Texture (FP 11.7/ AIR 3.7 and below), since camera.drawToBitmapData() does not support a rect parameter. See examples below and read more about performance of POT/NPOT Textures here:
+Note: Unfortunatelly you may have to use a strategy with DRAW_BITMAPDATA or UPLOAD_FROM_BYTEARRAY to keep the image centered, using the cropping rect if you use a regular POT Texture (FP 11.7/ AIR 3.7 and below), since camera.drawToBitmapData() does not support a rect parameter. See examples in the documentation and read more about performance of POT/NPOT Textures here:
 
 http://www.flintfabrik.de/blog/camera-performance-with-stage3d
+
 http://www.flintfabrik.de/blog/webcam-performance-with-stage3d-part-ii-rectangletextures-in-air-3-8-beta
+
 http://www.flintfabrik.de/blog/webcam-performance-with-stage3d-part-iii-rectangletextures-in-air-3-8-beta-mobile
