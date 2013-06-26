@@ -1,5 +1,6 @@
 package starling.extensions
 {
+	import flash.desktop.*;
 	import flash.display.BitmapData;
 	import flash.display.Bitmap;
 	import flash.display3D.Context3D;
@@ -12,6 +13,7 @@ package starling.extensions
 	import flash.geom.Rectangle;
 	import flash.media.Camera;
 	import flash.media.Video;
+	import flash.system.Capabilities;
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 	import flash.utils.getTimer;
@@ -28,6 +30,16 @@ package starling.extensions
 	import starling.textures.TextureSmoothing;
 	import starling.utils.getNextPowerOfTwo;
 	import starling.utils.VertexData;
+	
+	import starling.extensions.events.WebcamVideoEvent;
+	
+	/** Dispatched when a new frame of the camera is available. */
+    [Event(name="videoFrame", type="starling.extensions.events.WebcamVideoEvent")]
+    /** Dispatched after a new frame has been drawn to BitmapData/ByteArray. */
+    [Event(name="drawComplete", type="starling.extensions.events.WebcamVideoEvent")]
+    /** Dispatched after a new frame has been uploaded from the BitmapData/ByteArray to texture. */
+    [Event(name="uploadComplete", type="starling.extensions.events.WebcamVideoEvent")]
+    
 	
 	/** A WebcamVideo is a Quad with a texture mapped onto it.
 	 *
@@ -46,9 +58,9 @@ package starling.extensions
 	 *  If you use Flash 11.8 / AIR 3.8 (-swf-version=21) RectangleTextures are supported if necessary. Versions below will
 	 *  always fall back to Textue, so make sure to use the cropping rect parameter to avoid the upload of unused bytes.</p>
 	 *
-	 *  <p><strong>Note:</strong>Unfortunatelly you may have to use a strategy with DRAW_BITMAPDATA or UPLOAD_FROM_BYTEARRAY
+	 *  <p><strong>Note:</strong> <em>Unfortunatelly you may have to use a strategy with DRAW_BITMAPDATA or UPLOAD_FROM_BYTEARRAY
 	 *  to keep the image centered, using the cropping rect if you use a regular POT Texture (FP 11.7/ AIR 3.7
-	 *  and below), since <em>camera.drawToBitmapData()</em> does not support a rect parameter.
+	 *  and below), since camera.drawToBitmapData() does not support a rect parameter.</em>
 	 *  See examples below and read more about performance of POT/NPOT Textures here:
 	 *  <ul>
 	 *  <li><a href="http://www.flintfabrik.de/blog/camera-performance-with-stage3d">Webcam Performance with Stage3D – Part I (desktop/mobile)</a></li>
@@ -58,13 +70,13 @@ package starling.extensions
 	 *  </p>
 	 *
 	 *  @see starling.textures.Texture
-	 *  @see Quad
+	 *  @see starling.display.Quad
 	 *
 	 *  @see http://www.flintfabrik.de/blog/camera-performance-with-stage3d
 	 *  @author Michael Trenkler
 	 */
 	
-	public class WebcamVideo extends Quad
+	public class WebcamVideo extends starling.display.Quad
 	{
 		
 		public static const DRAW_BITMAPDATA:int = 0;
@@ -100,6 +112,7 @@ package starling.extensions
 		private var mStrategy:int = 0;
 		private var mUseRectTexture:Boolean = false;
 		private var mTextureClass:Class;
+		private var mNativeApplicationClass:Class;
 		
 		private var tTime:uint;
 		private var mStatsDrawTime:Vector.<uint> = new Vector.<uint>();
@@ -129,151 +142,156 @@ package starling.extensions
 		 *
 		 * @example The following code shows a simple usage in Flash 11.8 / AIR 3.8 and above:
 		 * <listing version="3.8">
-		   package {
-		   import flash.geom.Rectangle;
-		   import flash.media.CameraPosition;
-		   import flash.media.Camera;
-		   import flash.events.TimerEvent;
-		   import flash.utils.Timer;
+package
+{
+	import flash.geom.Rectangle;
+	import flash.media.CameraPosition;
+	import flash.media.Camera;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
+	
+	import starling.core.Starling;
+	import starling.display.Sprite;
+	import starling.extensions.WebcamVideo;
+	import starling.textures.Texture;
+	import starling.text.TextField;
+	
+	public class WebcamTest extends Sprite
+	{
 		
-		   import starling.core.Starling;
-		   import starling.display.Sprite;
-		   import starling.extensions.WebcamVideo;
-		   import starling.textures.Texture;
-		   import starling.text.TextField;
+		private var webcamVideo:WebcamVideo;
+		private var statsTextField:TextField;
+		private var statsTimer:Timer = new Timer(1000, 0);
+		private var camera:Camera;
 		
-		   public class WebcamTest extends Sprite {
+		public function WebcamTest()
+		{
 		
-		   private var webcamVideo:WebcamVideo;
-		   private var statsTextField:TextField;
-		   private var statsTimer:Timer = new Timer(1000, 0);
-		   private var camera:Camera;
+			camera = Camera.getCamera();
+			camera.setLoopback(false);
+			camera.setMode(1280, 720, 15);
 		
-		   public function WebcamTest() {
+			webcamVideo = new WebcamVideo(camera);
+			center(webcamVideo);
+			addChild(webcamVideo);
 		
-		   camera = Camera.getCamera();
-		   camera.setLoopback(false);
-		   camera.setMode(1280, 720, 15);
+			statsTextField = new TextField(200, 100, &quot;CAMERA DEBUG&quot;, &quot;Arial&quot;, 10, 0xFF00FF, true);
+			statsTextField.hAlign = &quot;left&quot;;
+			statsTextField.vAlign = &quot;top&quot;;
+			statsTextField.y = 26;
+			addChild(statsTextField);
 		
-		   webcamVideo = new WebcamVideo(camera);
-		   center(webcamVideo);
-		   addChild(webcamVideo);
+			statsTimer.addEventListener(TimerEvent.TIMER, statsTimer_timerHandler);
+			statsTimer.start();
+			
+		}
 		
-		   statsTextField = new TextField(200, 100, "CAMERA DEBUG", "Arial", 10,  0xFF00FF, true);
-		   statsTextField.hAlign = "left";
-		   statsTextField.vAlign = "top";
-		   statsTextField.y = 26;
-		   addChild(statsTextField);
+		private function center(wv:WebcamVideo):void
+		{
+			wv.height = Starling.current.stage.stageHeight;
+			wv.scaleX = wv.scaleY;
+			wv.x = (Starling.current.stage.stageWidth - wv.width) ~~ .5;
+			wv.y = (Starling.current.stage.stageHeight - wv.height) ~~ .5;
+			wv.flipHorizontal = wv.camera.position != CameraPosition.BACK;
+		}
 		
-		   statsTimer.addEventListener(TimerEvent.TIMER, statsTimer_timerHandler);
-		   statsTimer.start();
 		
-		   }
-		
-		   private function center(wv:WebcamVideo):void {
-		   wv.height = Starling.current.stage.stageHeight;
-		   wv.scaleX = wv.scaleY;
-		   wv.x = (Starling.current.stage.stageWidth - wv.width) * .5;
-		   wv.y = (Starling.current.stage.stageHeight - wv.height) * .5;
-		   wv.flipHorizontal = wv.camera.position != CameraPosition.BACK;
-		   }
-		
-		   private function statsTimer_timerHandler(e:TimerEvent):void {
-		   statsTextField.text = "FPS:\t" + camera.currentFPS.toFixed(1) + "/" + camera.fps.toFixed(1)
-		   + "\ncam:\t" + camera.width + "x" + camera.height
-		   + "\ntextureClass: " + webcamVideo.texture.root.base
-		   + "\ntexture:\t" + webcamVideo.texture.root.nativeWidth + "x" +  webcamVideo.texture.root.nativeHeight
-		   + "\ndraw:\t" + webcamVideo.drawTime.toFixed(2) + " ms"
-		   + "\nupload:\t" + webcamVideo.uploadTime.toFixed(2) + " ms"
-		   + "\ncomplete:\t" + (webcamVideo.drawTime+webcamVideo.uploadTime).toFixed(2)+" ms";
-		   }
-		   }
-		   }
+		private function statsTimer_timerHandler(e:TimerEvent):void {
+			statsTextField.text = &quot;FPS:\t&quot; + camera.currentFPS.toFixed(1) + &quot;/&quot; + camera.fps.toFixed(1)
+			+ &quot;\ncam:\t&quot; + camera.width + &quot;x&quot; + camera.height
+			+ &quot;\ntextureClass: &quot; + webcamVideo.texture.root.base
+			+ &quot;\ntexture:\t&quot; + webcamVideo.texture.root.nativeWidth + &quot;x&quot; +  webcamVideo.texture.root.nativeHeight
+			+ &quot;\ndraw:\t&quot; + webcamVideo.drawTime.toFixed(2) + &quot; ms&quot;
+			+ &quot;\nupload:\t&quot; + webcamVideo.uploadTime.toFixed(2) + &quot; ms&quot;
+			+ &quot;\ncomplete:\t&quot; + (webcamVideo.drawTime+webcamVideo.uploadTime).toFixed(2)+&quot; ms&quot;;
+		}
+	}
+}
 		 * </listing>
 		 *
 		 * @example In versions Flash 11.7 / AIR 3.7 and below make sure to use a clipping Rect and adjust the strategy, e.g. like this:
 		 * <listing>
-		   camera.setMode(640, 640, 15);
-		   var cropping:Rectangle = new Rectangle(0, 0, getLowerPowerOfTwo(camera.width), getLowerPowerOfTwo(camera.height));
-		   webcamVideo = new WebcamVideo(camera, new Rectangle( (camera.width-cropping.width)*.5, (camera.height-cropping.height)*.5, cropping.width, cropping.height), true, WebcamVideo.DRAW_BITMAPDATA|WebcamVideo.UPLOAD_FROM_BITMAPDATA);
+camera.setMode(640, 640, 15);
+var cropping:Rectangle = new Rectangle(0, 0, getLowerPowerOfTwo(camera.width), getLowerPowerOfTwo(camera.height));
+webcamVideo = new WebcamVideo(camera, new Rectangle( (camera.width-cropping.width)~~.5, (camera.height-cropping.height)~~.5, cropping.width, cropping.height), true, WebcamVideo.DRAW_BITMAPDATA|WebcamVideo.UPLOAD_FROM_BITMAPDATA);
 		 * </listing>
 		 *
 		 * @example Full example (Flash 11.7 / AIR 3.7 and below):
 		 * <listing>
-		   package {
-		   import flash.geom.Rectangle;
-		   import flash.media.CameraPosition;
-		   import flash.media.Camera;
-		   import flash.events.TimerEvent;
-		   import flash.utils.Timer;
+package {
+	import flash.geom.Rectangle;
+	import flash.media.CameraPosition;
+	import flash.media.Camera;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
+	
+	import starling.core.Starling;
+	import starling.display.Sprite;
+	import starling.extensions.WebcamVideo;
+	import starling.textures.Texture;
+	import starling.text.TextField;
+	
+	public class WebcamTest extends Sprite {
 		
-		   import starling.core.Starling;
-		   import starling.display.Sprite;
-		   import starling.extensions.WebcamVideo;
-		   import starling.textures.Texture;
-		   import starling.text.TextField;
+		private var webcamVideo:WebcamVideo;
+		private var statsTextField:TextField;
+		private var statsTimer:Timer = new Timer(1000, 0);
+		private var camera:Camera;
 		
-		   public class WebcamTest extends Sprite {
+		public function WebcamTest() {
+			
+			camera = Camera.getCamera();
+			camera.setLoopback(false);
+			camera.setMode(640, 640, 15);
+			var cropping:Rectangle = new Rectangle(0, 0, getLowerPowerOfTwo(camera.width), getLowerPowerOfTwo(camera.height));
+			webcamVideo = new WebcamVideo(camera, new Rectangle( (camera.width-cropping.width)~~.5, (camera.height-cropping.height)~~.5, cropping.width, cropping.height), true, WebcamVideo.DRAW_BITMAPDATA|WebcamVideo.UPLOAD_FROM_BITMAPDATA);
+			center(webcamVideo);
+			addChild(webcamVideo);
+			
+			statsTextField = new TextField(200, 100, &quot;CAMERA DEBUG&quot;, &quot;Arial&quot;, 10,  0xFF00FF, true);
+			statsTextField.hAlign = &quot;left&quot;;
+			statsTextField.vAlign = &quot;top&quot;;
+			statsTextField.y = 26;
+			addChild(statsTextField);
+			
+			statsTimer.addEventListener(TimerEvent.TIMER, statsTimer_timerHandler);
+			statsTimer.start();
 		
-		   private var webcamVideo:WebcamVideo;
-		   private var statsTextField:TextField;
-		   private var statsTimer:Timer = new Timer(1000, 0);
-		   private var camera:Camera;
+		}
+		private function getLowerPowerOfTwo(val:int):int {
+			var result:int = 1;
+			val &gt;&gt;= 1;
+			while (val) {
+			val &gt;&gt;= 1;
+			result &lt;&lt;= 1;
+			}
+			return result;
+		}
 		
-		   public function WebcamTest() {
+		private function center(wv:WebcamVideo):void {
+			wv.height = Starling.current.stage.stageHeight;
+			wv.scaleX = wv.scaleY;
+			wv.x = (Starling.current.stage.stageWidth - wv.width) ~~ .5;
+			wv.y = (Starling.current.stage.stageHeight - wv.height) ~~ .5;
+			wv.flipHorizontal = wv.camera.position != CameraPosition.BACK;
+		}
 		
-		   camera = Camera.getCamera();
-		   camera.setLoopback(false);
-		   camera.setMode(640, 640, 15);
-		   var cropping:Rectangle = new Rectangle(0, 0, getLowerPowerOfTwo(camera.width), getLowerPowerOfTwo(camera.height));
-		   webcamVideo = new WebcamVideo(camera, new Rectangle( (camera.width-cropping.width)*.5, (camera.height-cropping.height)*.5, cropping.width, cropping.height), true, WebcamVideo.DRAW_BITMAPDATA|WebcamVideo.UPLOAD_FROM_BITMAPDATA);
-		   center(webcamVideo);
-		   addChild(webcamVideo);
-		
-		   statsTextField = new TextField(200, 100, "CAMERA DEBUG", "Arial", 10,  0xFF00FF, true);
-		   statsTextField.hAlign = "left";
-		   statsTextField.vAlign = "top";
-		   statsTextField.y = 26;
-		   addChild(statsTextField);
-		
-		   statsTimer.addEventListener(TimerEvent.TIMER, statsTimer_timerHandler);
-		   statsTimer.start();
-		
-		   }
-		   private function getLowerPowerOfTwo(val:int):int {
-		   var result:int = 1;
-		   val >>= 1;
-		   while (val) {
-		   val >>= 1;
-		   result <<= 1;
-		   }
-		   return result;
-		   }
-		
-		   private function center(wv:WebcamVideo):void {
-		   wv.height = Starling.current.stage.stageHeight;
-		   wv.scaleX = wv.scaleY;
-		   wv.x = (Starling.current.stage.stageWidth - wv.width) * .5;
-		   wv.y = (Starling.current.stage.stageHeight - wv.height) * .5;
-		   wv.flipHorizontal = wv.camera.position != CameraPosition.BACK;
-		   }
-		
-		   private function statsTimer_timerHandler(e:TimerEvent):void {
-		   statsTextField.text = "FPS:\t" + camera.currentFPS.toFixed(1) + "/" + camera.fps.toFixed(1)
-		   + "\ncam:\t" + camera.width + "x" + camera.height
-		   + "\ntextureClass: " + webcamVideo.texture.root.base
-		   + "\ntexture:\t" + webcamVideo.texture.root.nativeWidth + "x" +  webcamVideo.texture.root.nativeHeight
-		   + "\ndraw:\t" + webcamVideo.drawTime.toFixed(2) + " ms"
-		   + "\nupload:\t" + webcamVideo.uploadTime.toFixed(2) + " ms"
-		   + "\ncomplete:\t" + (webcamVideo.drawTime+webcamVideo.uploadTime).toFixed(2)+" ms";
-		   }
-		   }
-		   }
+		private function statsTimer_timerHandler(e:TimerEvent):void {
+			statsTextField.text = &quot;FPS:\t&quot; + camera.currentFPS.toFixed(1) + &quot;/&quot; + camera.fps.toFixed(1)
+			+ &quot;\ncam:\t&quot; + camera.width + &quot;x&quot; + camera.height
+			+ &quot;\ntextureClass: &quot; + webcamVideo.texture.root.base
+			+ &quot;\ntexture:\t&quot; + webcamVideo.texture.root.nativeWidth + &quot;x&quot; +  webcamVideo.texture.root.nativeHeight
+			+ &quot;\ndraw:\t&quot; + webcamVideo.drawTime.toFixed(2) + &quot; ms&quot;
+			+ &quot;\nupload:\t&quot; + webcamVideo.uploadTime.toFixed(2) + &quot; ms&quot;
+			+ &quot;\ncomplete:\t&quot; + (webcamVideo.drawTime+webcamVideo.uploadTime).toFixed(2)+&quot; ms&quot;;
+		}
+	}
+}
 		 * </listing>
 		 */
 		
-		public function WebcamVideo(camera:Camera, rect:Rectangle = null, autoStart:Boolean = true, strategy:uint = (WebcamVideo.DRAW_CAMERA + WebcamVideo.OPAQUE + WebcamVideo.UPLOAD_FROM_BITMAPDATA))
-		{
+		public function WebcamVideo(camera:Camera, rect:Rectangle = null, autoStart:Boolean = true, strategy:uint = 0) {
+			//	(WebcamVideo.DRAW_CAMERA + WebcamVideo.OPAQUE + WebcamVideo.UPLOAD_FROM_BITMAPDATA))
 			var pma:Boolean = true;
 			mCamera = camera;
 			if (rect == null)
@@ -287,12 +305,7 @@ package starling.extensions
 				throw new ArgumentError("Invalid strategy");
 			mStrategy = strategy;
 			
-			var context:Context3D = Starling.context;
-			if (context == null)
-				throw new MissingContextError();
-			var isPot:Boolean = (rect.width == getNextPowerOfTwo(rect.width) && rect.height == getNextPowerOfTwo(rect.height));
-			var generateMipMaps:Boolean = false;
-			mUseRectTexture = !isPot && !generateMipMaps && Starling.current.profile != Context3DProfile.BASELINE_CONSTRAINED && "createRectangleTexture" in context;
+			mUseRectTexture = useRectTexture();
 			
 			readjustSize(mFrame);
 			mVertexDataCache = new VertexData(4, pma);
@@ -312,11 +325,39 @@ package starling.extensions
 			}
 			
 			addEventListener(starling.events.Event.ADDED_TO_STAGE, addedToStageHandler);
+			
+			// Android / iOS / Blackberry?
+			if(Capabilities.playerType.match(/desktop/i)){
+				try{
+					mNativeApplicationClass = Class(getDefinitionByName("flash.desktop.NativeApplication"));
+					if((Capabilities.os+Capabilities.manufacturer).match(/Android|iOS|iPhone|iPad|iPod|Blackberry/i) && mNativeApplicationClass && mNativeApplicationClass.nativeApplication) {
+						mNativeApplicationClass.nativeApplication.addEventListener(flash.events.Event.ACTIVATE, activateHandler);
+						mNativeApplicationClass.nativeApplication.addEventListener(flash.events.Event.DEACTIVATE, deactivateHandler);
+					}
+				}catch (err:*) {
+					trace(err.toString())
+				}
+			}
+			// windows and web
 			Starling.current.addEventListener(starling.events.Event.CONTEXT3D_CREATE, contextCreateHandler);
+			
 		}
 		
 		/**
-		 * Restarting after devcie loss.
+		 * Calculating whether the texture can be a RectangularTexture.
+		 * @param	e
+		 */
+		private function useRectTexture():Boolean {
+			var context:Context3D = Starling.context;
+			if (context == null)
+				throw new MissingContextError();
+			var isPot:Boolean = (mFrame.width == getNextPowerOfTwo(mFrame.width) && mFrame.height == getNextPowerOfTwo(mFrame.height));
+			var generateMipMaps:Boolean = false;
+			return !isPot && !generateMipMaps && Starling.current.profile != Context3DProfile.BASELINE_CONSTRAINED && "createRectangleTexture" in context;
+		}
+		
+		/**
+		 * Restart after device loss.
 		 * @param	e
 		 */
 		private function contextCreateHandler(e:starling.events.Event):void
@@ -324,8 +365,28 @@ package starling.extensions
 			if (Starling.current.context && Starling.current.context.driverInfo != "Disposed" && mContextLost)
 			{
 				mContextLost = false;
+				mCamera.setMode(mCamera.width, mCamera.height, mCamera.fps);
+				readjustSize(mFrame);
 				start(mAutoStartAfterHandledLostContext);
 			}
+		}
+		/**
+		 * Resume on application focus for mobile devices.
+		 * @param	e
+		 */
+		private function activateHandler(e:flash.events.Event):void 
+		{
+			mCamera.setMode(mCamera.width, mCamera.height, mCamera.fps);
+			start(mAutoStartAfterHandledLostContext);
+		}
+		/**
+		 * Pause on lost application focus for mobile devices.
+		 * @param	e
+		 */
+		private function deactivateHandler(e:flash.events.Event):void 
+		{
+			mAutoStartAfterHandledLostContext = isActive;
+			pause();
 		}
 		
 		/**
@@ -350,6 +411,10 @@ package starling.extensions
 			mAddedToStage = false;
 		}
 		
+		/**
+		 * Stops the camera if the instance is removed from the stage and autoStart true.
+		 * @param	e
+		 */
 		private function camera_statusHandler(e:StatusEvent):void
 		{
 			onCameraChange();
@@ -468,6 +533,7 @@ package starling.extensions
 			}
 			else if (Starling.current.context && Starling.current.context.driverInfo != "Disposed" && mContextLost)
 			{
+				mCamera.setMode(mCamera.width, mCamera.height, mCamera.fps);
 				mContextLost = false;
 				return false;
 			}
@@ -484,6 +550,7 @@ package starling.extensions
 				return;
 			
 			mNewFrameAvailable = true;
+			dispatchEventWith(WebcamVideoEvent.VIDEO_FRAME);
 			if (mRecording)
 			{
 				draw();
@@ -505,6 +572,9 @@ package starling.extensions
 		 */
 		public function draw():void
 		{
+			if (!contextStatus())
+				return;
+				
 			tTime = getTimer();
 			if ((mStrategy & BIT_UPLOAD) == UPLOAD_FROM_BITMAPDATA)
 			{
@@ -535,6 +605,7 @@ package starling.extensions
 				mStatsDrawTime.pop();
 			mNewFrameAvailable = false;
 			++mStatsDrawnFrames;
+			dispatchEventWith(WebcamVideoEvent.DRAW_COMPLETE);
 		}
 		
 		/**
@@ -543,6 +614,9 @@ package starling.extensions
 		 */
 		public function upload():void
 		{
+			if (!contextStatus())
+				return;
+			
 			tTime = getTimer();
 			if ((mStrategy & BIT_UPLOAD) == UPLOAD_FROM_BITMAPDATA)
 			{
@@ -556,6 +630,7 @@ package starling.extensions
 			while (mStatsUploadTime.length > STATS_PRECISION)
 				mStatsUploadTime.pop();
 			++mStatsUploadedFrames;
+			dispatchEventWith(WebcamVideoEvent.UPLOAD_COMPLETE);
 		}
 		
 		/**
@@ -657,6 +732,10 @@ package starling.extensions
 			mCamera.removeEventListener(StatusEvent.STATUS, camera_statusHandler);
 			mCamera.removeEventListener(flash.events.Event.VIDEO_FRAME, camera_videoFrameHandler);
 			Starling.current.removeEventListener(starling.events.Event.CONTEXT3D_CREATE, contextCreateHandler);
+			if(mNativeApplicationClass){
+				mNativeApplicationClass.nativeApplication.removeEventListener(flash.events.Event.ACTIVATE, activateHandler);
+				mNativeApplicationClass.nativeApplication.removeEventListener(flash.events.Event.DEACTIVATE, deactivateHandler);
+			}
 			if (mVideo)
 				mVideo.attachCamera(null);
 			if (mTexture)
@@ -685,6 +764,7 @@ package starling.extensions
 		 */
 		public function readjustSize(rectangle:Rectangle = null):void
 		{
+			if (!contextStatus()) return;
 			mStatsDrawnFrames = 0;
 			mStatsUploadedFrames = 0;
 			mStatsDrawTime = new Vector.<uint>();
@@ -700,6 +780,7 @@ package starling.extensions
 				mByteArray.clear();
 			if (mTexture)
 				mTexture.dispose();
+			
 			mVideo = new Video(mCamera.width, mCamera.height);
 			if (mRecording)
 				mVideo.attachCamera(mCamera);
@@ -714,6 +795,7 @@ package starling.extensions
 				mByteArray.length = mFrame.width * mFrame.height * 4;
 			}
 			
+			mUseRectTexture = useRectTexture();
 			if (mUseRectTexture // bug in starling.textures.Texture.empty(); ???
 				|| (mStrategy & BIT_DRAW) == DRAW_BITMAPDATA || (mStrategy & BIT_UPLOAD) == UPLOAD_FROM_BITMAPDATA)
 			{
@@ -723,7 +805,6 @@ package starling.extensions
 			}
 			
 			mFrameMatrix = new Matrix(1, 0, 0, 1, -mFrame.x, -mFrame.y);
-			
 			if (!mVertexData)
 				return;
 			mVertexData.setPosition(0, 0.0, 0.0);
@@ -731,7 +812,7 @@ package starling.extensions
 			mVertexData.setPosition(2, 0.0, mFrame.height);
 			mVertexData.setPosition(3, mFrame.width, mFrame.height);
 			onVertexDataChanged();
-			
+
 			if (mUseRectTexture)
 			{ // bug in starling.textures.Texture.empty(); ???
 				_texture = starling.textures.Texture.fromBitmapData(mBitmapData, false);
