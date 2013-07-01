@@ -796,8 +796,7 @@ package {
 			}
 			
 			mUseRectTexture = useRectTexture();
-			if (mUseRectTexture // bug in starling.textures.Texture.empty(); ???
-				|| (mStrategy & BIT_DRAW) == DRAW_BITMAPDATA || (mStrategy & BIT_UPLOAD) == UPLOAD_FROM_BITMAPDATA)
+			if ((mStrategy & BIT_DRAW) == DRAW_BITMAPDATA || (mStrategy & BIT_UPLOAD) == UPLOAD_FROM_BITMAPDATA)
 			{
 				//UPLOAD_FROM_BITMAPDATA
 				mBitmapData = new BitmapData(mFrame.width, mFrame.height, Boolean(mStrategy & BIT_ALPHA) == ALPHA, 0);
@@ -813,14 +812,9 @@ package {
 			mVertexData.setPosition(3, mFrame.width, mFrame.height);
 			onVertexDataChanged();
 
-			if (mUseRectTexture)
-			{ // bug in starling.textures.Texture.empty(); ???
-				_texture = starling.textures.Texture.fromBitmapData(mBitmapData, false);
-			}
-			else
-			{
-				_texture = starling.textures.Texture.empty(mFrame.width, mFrame.height);
-			}
+			_texture = starling.textures.Texture.empty(mFrame.width, mFrame.height, true, false, false, -1);
+			// if you're using an older version of Starling and get a compile time error, replace the line above with:
+			// _texture = starling.textures.Texture.empty(mFrame.width, mFrame.height, true, false, -1);
 		}
 		
 		/**
