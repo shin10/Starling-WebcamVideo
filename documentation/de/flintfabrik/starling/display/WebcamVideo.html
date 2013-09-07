@@ -1,0 +1,271 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><!-- saved from url=(0014)about:internet --><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link rel="stylesheet" href="../../../../style.css" type="text/css" media="screen"><link rel="stylesheet" href="../../../../print.css" type="text/css" media="print"><link rel="stylesheet" href="../../../../override.css" type="text/css"><meta name="keywords" content="WebcamVideo,de.flintfabrik.starling.display.WebcamVideo,ALPHA,DRAW_BITMAPDATA,DRAW_CAMERA,OPAQUE,UPLOAD_FROM_BITMAPDATA,UPLOAD_FROM_BYTEARRAY,bitmapData,byteArray,camera,drawTime,drawnFrames,flipHorizontal,flipVertical,isActive,isRecording,newFrameAvailable,smoothing,statsPrecision,texture,uploadTime,uploadedFrames,copyVertexDataTo,dispose,draw,onVertexDataChanged,pause,readjustSize,render,start,stop,upload"><title>de.flintfabrik.starling.display.WebcamVideo</title></head><body><script language="javascript" type="text/javascript" src="../../../../asdoc.js"></script><script language="javascript" type="text/javascript" src="../../../../help.js"></script><script language="javascript" type="text/javascript" src="../../../../cookies.js"></script><script language="javascript" type="text/javascript"><!--
+				asdocTitle = 'WebcamVideo - API Documentation';
+				var baseRef = '../../../../';
+				window.onload = configPage;
+			--></script>
+<script type="text/javascript">
+			scrollToNameAnchor();
+		</script><table class="titleTable" cellpadding="0" cellspacing="0" id="titleTable" style="display:none"><tr><td class="titleTableTitle" align="left">WebcamVideo</td><td class="titleTableTopNav" align="right"><a href="../../../../package-summary.html" onclick="loadClassListFrame('../../../../all-classes.html')">All Packages</a>&nbsp;|&nbsp;<a href="../../../../class-summary.html" onclick="loadClassListFrame('../../../../all-classes.html')">All Classes</a>&nbsp;|&nbsp;<a href="../../../../all-index-A.html" onclick="loadClassListFrame('../../../../index-list.html')">Index</a>&nbsp;|&nbsp;<a id="framesLink1" href="../../../../index.html?de/flintfabrik/starling/display/WebcamVideo.html&amp;de/flintfabrik/starling/display/class-list.html">Frames</a><a id="noFramesLink1" style="display:none" href="" onclick="parent.location=document.location"> No Frames </a></td><td class="titleTableLogo" align="right" rowspan="3"><img src="../../../../images/logo.jpg" class="logoImage" alt=" Adobe Logo " title=" Adobe Logo "></td></tr><tr class="titleTableRow2"><td class="titleTableSubTitle" id="subTitle" align="left">WebcamVideo</td><td class="titleTableSubNav" id="subNav" align="right"><a href="#propertySummary">Properties</a>&nbsp;| <a href="#methodSummary">Methods</a>&nbsp;| <a href="#eventSummary">Events</a>&nbsp;| <a href="#constantSummary">Constants</a></td></tr><tr class="titleTableRow3"><td colspan="3">&nbsp;</td></tr></table><script language="javascript" type="text/javascript" xml:space="preserve">
+				<!--
+				
+					if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("WebcamVideo"); titleBar_setSubNav(true,true,false,false,false,false,true,false,true,false,false	,false,false,false,false,false);}	
+				-->
+			</script><div xmlns:fn="http://www.w3.org/2005/xpath-functions" class="MainContent"><table class="classHeaderTable" cellpadding="0" cellspacing="0"><tr><td class="classHeaderTableLabel">Package</td><td><a href="package-detail.html" onclick="javascript:loadClassListFrame('class-list.html')">de.flintfabrik.starling.display</a></td></tr><tr><td class="classHeaderTableLabel">Class</td><td class="classSignature">public  class  WebcamVideo</td></tr><tr><td class="classHeaderTableLabel">Inheritance</td><td class="inheritanceList">WebcamVideo  <img src="../../../../images/inherit-arrow.gif" title="Inheritance" alt="Inheritance" class="inheritArrow"> starling.display.Quad</td></tr></table><p></p><p></p><p></p> A WebcamVideo is a Quad with a texture mapped onto it.
+	 	  <p>The WebcamVideo class is more or less a Starling equivalent of Flash's Video class with attached Camera.
+	  The texture is written automatically if not specified otherwise. Never the less you can use other DisplayObjects
+	  for rendering as well and or handle the drawing and uploading yourself if you want to.</p>
+	 	            <p>As "WebcamVideo" inherits from "Quad", you can give it a color. For each pixel, the resulting
+	  color will be the result of the multiplication of the color of the texture with the color of
+	  the quad. That way, you can easily tint textures with a certain color. Furthermore flipping is simply done by
+	  adjusting the vertexData.</p>
+	 	            <p>Uploading textures to the GPU is very expensive. This may be no problem on desktop computers
+	  but it is a big problem on most mobile devices. Therefore it is very important to chose the right
+	  resolution and texture size, as well as the method for drawing and uploading.
+	  If you use Flash 11.8 / AIR 3.8 (-swf-version=21) RectangleTextures are supported if necessary. Versions below will
+	  always fall back to Textue, so make sure to use the cropping rect parameter to avoid the upload of unused bytes.</p>
+	 	            <p>
+                  <b>Note:</b> 
+                  <i>Unfortunatelly you may have to use a strategy with DRAW_BITMAPDATA or UPLOAD_FROM_BYTEARRAY
+	  to keep the image centered, using the cropping rect if you use a regular POT Texture (FP 11.7/ AIR 3.7
+	  and below), since camera.drawToBitmapData() does not support a rect parameter.</i>
+	  See examples below and read more about performance of POT/NPOT Textures here:
+	  <ul>
+	                    <li>
+                        <a href="http://www.flintfabrik.de/blog/camera-performance-with-stage3d" target="">Webcam Performance with Stage3D – Part I (desktop/mobile)</a>
+                     </li>
+	                    <li>
+                        <a href="http://www.flintfabrik.de/blog/webcam-performance-with-stage3d-part-ii-rectangletextures-in-air-3-8-beta" target="">Webcam Performance with Stage3D – Part II RectangleTextures in AIR 3.8 Beta (desktop)</a>
+                     </li>
+	                    <li>
+                        <a href="http://www.flintfabrik.de/blog/webcam-performance-with-stage3d-part-iii-rectangletextures-in-air-3-8-beta-mobile" target="">Webcam Performance with Stage3D – Part III RectangleTextures in AIR 3.8 Beta (mobile)</a>
+                     </li>
+	                 </ul>
+	              </p>
+	 	         <p></p><p><span class="classHeaderTableLabel">See also</span></p><div class="seeAlso">starling.textures.Texture<br/>starling.display.Quad<br/><a href="http://www.flintfabrik.de/blog/camera-performance-with-stage3d" target="mm_external">http://www.flintfabrik.de/blog/camera-performance-with-stage3d</a></div><br/><hr></div><a name="propertySummary"></a><div class="summarySection"><div class="summaryTableTitle">Public Properties</div><table cellspacing="0" cellpadding="3" class="summaryTable " id="summaryTableProperty"><tr><th>&nbsp;</th><th colspan="2">Property</th><th class="summaryTableOwnerCol">Defined By</th></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#bitmapData" class="signatureLink">bitmapData</a> : BitmapData<div class="summaryTableDescription">[read-only] 
+		 The bitmapData with the camera image (if in use), for example to calculate stuff in a game or augmented reality application.</div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#byteArray" class="signatureLink">byteArray</a> : ByteArray<div class="summaryTableDescription">[read-only] 
+		 The byteArray with the camera image (if in use), for example to calculate stuff in a game or augmented reality application.</div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#camera" class="signatureLink">camera</a> : Camera<div class="summaryTableDescription">[read-only] 
+		 Returns the camera object.</div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#drawnFrames" class="signatureLink">drawnFrames</a> : uint<div class="summaryTableDescription">[read-only] 
+		 Returns the number of drawn frames since the last call of start(), stop(), pause() or readjustSize()
+		 </div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#drawTime" class="signatureLink">drawTime</a> : Number<div class="summaryTableDescription">[read-only] 
+		 Returns the average drawing time (up to 15 frames, if already available)
+		 </div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#flipHorizontal" class="signatureLink">flipHorizontal</a> : Boolean<div class="summaryTableDescription">
+		 Returns whether the vertexData of the WebcamVideo instance is flipped horizontally.</div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#flipVertical" class="signatureLink">flipVertical</a> : Boolean<div class="summaryTableDescription">
+		 Returns whether the vertexData of the WebcamVideo instance is flipped vertically.</div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#isActive" class="signatureLink">isActive</a> : Boolean<div class="summaryTableDescription">[read-only]  Returns whether the camera is active.</div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#isRecording" class="signatureLink">isRecording</a> : Boolean<div class="summaryTableDescription">[read-only]  Returns whether the camera is drawn and uploaded to texture or not.</div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#newFrameAvailable" class="signatureLink">newFrameAvailable</a> : Boolean<div class="summaryTableDescription">[read-only] 
+		 Returns whether a new webcam frame is available but hasn't been drawn, yet.</div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#smoothing" class="signatureLink">smoothing</a> : String<div class="summaryTableDescription"> The smoothing filter that is used for rendering the texture.</div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#statsPrecision" class="signatureLink">statsPrecision</a> : uint = 15<div class="summaryTableDescription">[static] </div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#texture" class="signatureLink">texture</a> : ConcreteTexture<div class="summaryTableDescription">[read-only]  The texture with the camera image.</div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#uploadedFrames" class="signatureLink">uploadedFrames</a> : uint<div class="summaryTableDescription">[read-only] 
+		 Returns the number of uploaded frames since the last call of start(), stop(), pause() or readjustSize()
+		 </div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#uploadTime" class="signatureLink">uploadTime</a> : Number<div class="summaryTableDescription">[read-only] 
+		 Returns the average upload time (up to 15 frames, if already available)
+		 </div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr></table></div><a name="methodSummary"></a><div class="summarySection"><div class="summaryTableTitle">Public Methods </div><table cellspacing="0" cellpadding="3" class="summaryTable " id="summaryTableMethod"><tr><th>&nbsp;</th><th colspan="2">Method</th><th class="summaryTableOwnerCol">Defined By</th></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><div class="summarySignature"><a href="#WebcamVideo()" class="signatureLink">WebcamVideo</a>(camera:Camera, rect:Rectangle = null, autoStart:Boolean = true, strategy:uint = 0)</div><div class="summaryTableDescription"> Creates a WebcamVideo
+		 </div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><div class="summarySignature"><a href="#copyVertexDataTo()" class="signatureLink">copyVertexDataTo</a>(targetData:VertexData, targetVertexID:int = 0):void</div><div class="summaryTableDescription">[override]  Copies the raw vertex data to a VertexData instance.</div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><div class="summarySignature"><a href="#dispose()" class="signatureLink">dispose</a>():void</div><div class="summaryTableDescription">[override]  Disposes all resources of the WebcamVideo Object.</div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><div class="summarySignature"><a href="#draw()" class="signatureLink">draw</a>():void</div><div class="summaryTableDescription">
+		 Drawing the camera image to the BitmapData/ByteArray, according to the chosen strategy.</div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><div class="summarySignature"><a href="#pause()" class="signatureLink">pause</a>():void</div><div class="summaryTableDescription"> Pauses the Video EventListeners (drawing/uploading) but the camera will stay active.</div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><div class="summarySignature"><a href="#readjustSize()" class="signatureLink">readjustSize</a>(rectangle:Rectangle = null):void</div><div class="summaryTableDescription"> Readjusts the dimensions of the video according to the current camera/croppingFrame.</div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><div class="summarySignature"><a href="#render()" class="signatureLink">render</a>(support:RenderSupport, parentAlpha:Number):void</div><div class="summaryTableDescription">[override]  </div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><div class="summarySignature"><a href="#start()" class="signatureLink">start</a>(forceRecording:Boolean = false):void</div><div class="summaryTableDescription">
+		 Starting/Resuming the camera.</div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><div class="summarySignature"><a href="#stop()" class="signatureLink">stop</a>():void</div><div class="summaryTableDescription"> Stopping the camera and EventListeners.</div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><div class="summarySignature"><a href="#upload()" class="signatureLink">upload</a>():void</div><div class="summaryTableDescription">
+		 Uploading the BitmapData/ByteArray, according to the chosen strategy.</div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr></table></div><a name="protectedMethodSummary"></a><div class="summarySection"><div class="summaryTableTitle">Protected Methods </div><table cellspacing="0" cellpadding="3" class="summaryTable " id="summaryTableProtectedMethod"><tr><th>&nbsp;</th><th colspan="2">Method</th><th class="summaryTableOwnerCol">Defined By</th></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><div class="summarySignature"><a href="#onVertexDataChanged()" class="signatureLink">onVertexDataChanged</a>():void</div><div class="summaryTableDescription">[override]  </div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr></table></div><a name="eventSummary"></a><div class="summarySection"><div class="summaryTableTitle">Events</div><table cellspacing="0" cellpadding="3" class="summaryTable " id="summaryTableEvent"><tr><th>&nbsp;</th><th colspan="2">Event</th><th> Summary </th><th class="summaryTableOwnerCol">Defined By</th></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><div class="summarySignature"><a href="#event:drawComplete" class="signatureLink">drawComplete</a></div></td><td class="summaryTableDescription summaryTableCol">Dispatched after a new frame has been drawn to BitmapData/ByteArray.</td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><div class="summarySignature"><a href="#event:uploadComplete" class="signatureLink">uploadComplete</a></div></td><td class="summaryTableDescription summaryTableCol">Dispatched after a new frame has been uploaded from the BitmapData/ByteArray to texture.</td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><div class="summarySignature"><a href="#event:videoFrame" class="signatureLink">videoFrame</a></div></td><td class="summaryTableDescription summaryTableCol">Dispatched when a new frame of the camera is available.</td><td class="summaryTableOwnerCol">WebcamVideo</td></tr></table></div><a name="constantSummary"></a><div class="summarySection"><div class="summaryTableTitle">Public Constants</div><table cellspacing="0" cellpadding="3" class="summaryTable " id="summaryTableConstant"><tr><th>&nbsp;</th><th colspan="2">Constant</th><th class="summaryTableOwnerCol">Defined By</th></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#ALPHA" class="signatureLink">ALPHA</a> : int = 2<div class="summaryTableDescription">[static] </div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#DRAW_BITMAPDATA" class="signatureLink">DRAW_BITMAPDATA</a> : int = 0<div class="summaryTableDescription">[static] </div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#DRAW_CAMERA" class="signatureLink">DRAW_CAMERA</a> : int = 1<div class="summaryTableDescription">[static] </div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#OPAQUE" class="signatureLink">OPAQUE</a> : int = 0<div class="summaryTableDescription">[static] </div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#UPLOAD_FROM_BITMAPDATA" class="signatureLink">UPLOAD_FROM_BITMAPDATA</a> : int = 0<div class="summaryTableDescription">[static] </div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#UPLOAD_FROM_BYTEARRAY" class="signatureLink">UPLOAD_FROM_BYTEARRAY</a> : int = 4<div class="summaryTableDescription">[static] </div></td><td class="summaryTableOwnerCol">WebcamVideo</td></tr></table></div><script language="javascript" type="text/javascript"><!--
+										showHideInherited();
+										--></script><div class="MainContent"><div class="detailSectionHeader">Property Detail</div><a name="propertyDetail"></a><a name="bitmapData"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">bitmapData</td><td class="detailHeaderType">property</td></tr></table><div class="detailBody"><code>bitmapData:BitmapData</code>&nbsp;&nbsp;[read-only] <p></p><p></p><p>
+		 The bitmapData with the camera image (if in use), for example to calculate stuff in a game or augmented reality application.
+		 Do NOT change the reference or call dispose() on it!
+		 </p><br/><span class="label"> Implementation </span><br/><code>&nbsp;&nbsp;&nbsp;&nbsp;public function get bitmapData():BitmapData</code><br/></div><a name="propertyDetail"></a><a name="byteArray"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">byteArray</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>byteArray:ByteArray</code>&nbsp;&nbsp;[read-only] <p></p><p></p><p>
+		 The byteArray with the camera image (if in use), for example to calculate stuff in a game or augmented reality application.
+		 Do NOT change the reference or call clear() on it!
+		 </p><br/><span class="label"> Implementation </span><br/><code>&nbsp;&nbsp;&nbsp;&nbsp;public function get byteArray():ByteArray</code><br/></div><a name="propertyDetail"></a><a name="camera"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">camera</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>camera:Camera</code>&nbsp;&nbsp;[read-only] <p></p><p></p><p>
+		 Returns the camera object. You may change the resolution with setMode() but you'll have to call readjustSize() afterwards to
+		 update the texture size and cropping.
+		 </p><br/><span class="label"> Implementation </span><br/><code>&nbsp;&nbsp;&nbsp;&nbsp;public function get camera():Camera</code><br/><p><span class="label">See also</span></p><div class="seeAlso">readjustSize()</div></div><a name="propertyDetail"></a><a name="drawnFrames"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">drawnFrames</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>drawnFrames:uint</code>&nbsp;&nbsp;[read-only] <p></p><p></p><p>
+		 Returns the number of drawn frames since the last call of start(), stop(), pause() or readjustSize()
+		 </p><br/><span class="label"> Implementation </span><br/><code>&nbsp;&nbsp;&nbsp;&nbsp;public function get drawnFrames():uint</code><br/></div><a name="propertyDetail"></a><a name="drawTime"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">drawTime</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>drawTime:Number</code>&nbsp;&nbsp;[read-only] <p></p><p></p><p>
+		 Returns the average drawing time (up to 15 frames, if already available)
+		 </p><br/><span class="label"> Implementation </span><br/><code>&nbsp;&nbsp;&nbsp;&nbsp;public function get drawTime():Number</code><br/></div><a name="propertyDetail"></a><a name="flipHorizontal"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">flipHorizontal</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>flipHorizontal:Boolean</code><p></p><p></p><p>
+		 Returns whether the vertexData of the WebcamVideo instance is flipped horizontally.
+		 </p><br/><span class="label"> Implementation </span><br/><code>&nbsp;&nbsp;&nbsp;&nbsp;public function get flipHorizontal():Boolean</code><br/><code>&nbsp;&nbsp;&nbsp;&nbsp;public function set flipHorizontal(value:Boolean):void</code><br/></div><a name="propertyDetail"></a><a name="flipVertical"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">flipVertical</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>flipVertical:Boolean</code><p></p><p></p><p>
+		 Returns whether the vertexData of the WebcamVideo instance is flipped vertically.
+		 </p><br/><span class="label"> Implementation </span><br/><code>&nbsp;&nbsp;&nbsp;&nbsp;public function get flipVertical():Boolean</code><br/><code>&nbsp;&nbsp;&nbsp;&nbsp;public function set flipVertical(value:Boolean):void</code><br/></div><a name="propertyDetail"></a><a name="isActive"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">isActive</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>isActive:Boolean</code>&nbsp;&nbsp;[read-only] <p></p><p></p><p> Returns whether the camera is active.
+		  Note: The camera being active doesn't mean that it is recording. If you want to know whether the camera
+		  will be drawn and uploaded, use isRecording instead.
+		  </p><br/><span class="label"> Implementation </span><br/><code>&nbsp;&nbsp;&nbsp;&nbsp;public function get isActive():Boolean</code><br/><p><span class="label">See also</span></p><div class="seeAlso">start()</div></div><a name="propertyDetail"></a><a name="isRecording"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">isRecording</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>isRecording:Boolean</code>&nbsp;&nbsp;[read-only] <p></p><p></p><p> Returns whether the camera is drawn and uploaded to texture or not.
+		  Note: If the camera is not on stage it will never be drawn to texturere regardless of it's active state.
+		  Nevertheless it will start as soon as it is added to the stage if active is true.
+		  </p><br/><span class="label"> Implementation </span><br/><code>&nbsp;&nbsp;&nbsp;&nbsp;public function get isRecording():Boolean</code><br/><p><span class="label">See also</span></p><div class="seeAlso">start()</div></div><a name="propertyDetail"></a><a name="newFrameAvailable"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">newFrameAvailable</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>newFrameAvailable:Boolean</code>&nbsp;&nbsp;[read-only] <p></p><p></p><p>
+		 Returns whether a new webcam frame is available but hasn't been drawn, yet.
+		 </p><br/><span class="label"> Implementation </span><br/><code>&nbsp;&nbsp;&nbsp;&nbsp;public function get newFrameAvailable():Boolean</code><br/></div><a name="propertyDetail"></a><a name="smoothing"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">smoothing</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>smoothing:String</code><p></p><p></p><p> The smoothing filter that is used for rendering the texture.
+		   </p><p> The default value is <code>NONE</code>.</p><br/><span class="label"> Implementation </span><br/><code>&nbsp;&nbsp;&nbsp;&nbsp;public function get smoothing():String</code><br/><code>&nbsp;&nbsp;&nbsp;&nbsp;public function set smoothing(value:String):void</code><br/><p><span class="label">See also</span></p><div class="seeAlso">starling.textures.TextureSmoothing</div></div><a name="propertyDetail"></a><a name="statsPrecision"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">statsPrecision</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public static var statsPrecision:uint = 15</code><p></p></div><a name="propertyDetail"></a><a name="texture"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">texture</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>texture:ConcreteTexture</code>&nbsp;&nbsp;[read-only] <p></p><p></p><p> The texture with the camera image. Can be used in other DisplayObjects then the WebcamVideo as well.
+		  Note: The texture will never be transformed by the use of flipHorizontal/flipVertical.
+		 </p><br/><span class="label"> Implementation </span><br/><code>&nbsp;&nbsp;&nbsp;&nbsp;public function get texture():ConcreteTexture</code><br/></div><a name="propertyDetail"></a><a name="uploadedFrames"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">uploadedFrames</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>uploadedFrames:uint</code>&nbsp;&nbsp;[read-only] <p></p><p></p><p>
+		 Returns the number of uploaded frames since the last call of start(), stop(), pause() or readjustSize()
+		 </p><br/><span class="label"> Implementation </span><br/><code>&nbsp;&nbsp;&nbsp;&nbsp;public function get uploadedFrames():uint</code><br/></div><a name="propertyDetail"></a><a name="uploadTime"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">uploadTime</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>uploadTime:Number</code>&nbsp;&nbsp;[read-only] <p></p><p></p><p>
+		 Returns the average upload time (up to 15 frames, if already available)
+		 </p><br/><span class="label"> Implementation </span><br/><code>&nbsp;&nbsp;&nbsp;&nbsp;public function get uploadTime():Number</code><br/></div><a name="constructorDetail"></a><div class="detailSectionHeader">Constructor Detail</div><a name="WebcamVideo()"></a><a name="WebcamVideo(flash.media.Camera,flash.geom.Rectangle,Boolean,uint)"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">WebcamVideo</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">Constructor</td></tr></table><div class="detailBody"><code>public function WebcamVideo(camera:Camera, rect:Rectangle = null, autoStart:Boolean = true, strategy:uint = 0)</code><p></p><p> Creates a WebcamVideo
+		 </p><span class="label"> Parameters </span><table cellpadding="0" cellspacing="0" border="0"><tr><td width="20px"></td><td><code><span class="label">camera</span>:Camera</code> &mdash; 	 The Camera attached to the WebcamVideo
+		 </td></tr><tr><td class="paramSpacer">&nbsp;</td></tr><tr><td width="20px"></td><td><code><span class="label">rect</span>:Rectangle</code> (default = <code>null</code>)<code></code> &mdash; 	 A cropping rectangle. If null, the full image will be drawn.
+		 </td></tr><tr><td class="paramSpacer">&nbsp;</td></tr><tr><td width="20px"></td><td><code><span class="label">autoStart</span>:Boolean</code> (default = <code>true</code>)<code></code> &mdash; 	 If true the camera will be drawn to texture as soon as the WebcamVideo instance is added to stage.
+		 Recording stops automatically if the WebcamVideo instance is removed from stage. To prevent this
+		 behaviour use start(true) to force recording, even if the WebcamVideo is not part of the display list.
+		 </td></tr><tr><td class="paramSpacer">&nbsp;</td></tr><tr><td width="20px"></td><td><code><span class="label">strategy</span>:uint</code> (default = <code>0</code>)<code></code> &mdash; 	 The draw/upload strategy.
+		 ALPHA/OPAQUE sets the alpha property of the used BitmapData.
+		 UPLOAD_FROM_BITMAPDATA/UPLOAD_FROM_BYTEARRAY will set the Texture.uploadFromBitmapData/Texture.uploadFromByteArray
+		 function for uploading
+		 DRAW_CAMERA uses camera.drawToBitmapData / camera.copyToByteArray to capture the video
+		 DRAW_BITMAPDATA will use the bitmapData.draw(video) method (and bitmapData.copyToByteArray if necessary)
+		 </td></tr></table><br/><span class="label"> Example </span><br/><div class="detailBody">The following code shows a simple usage in Flash 11.8 / AIR 3.8 and above:
+		 <div class="listing" version="3.8"><pre>
+package
+{
+    import flash.geom.Rectangle;
+    import flash.media.CameraPosition;
+    import flash.media.Camera;
+    import flash.events.TimerEvent;
+    import flash.utils.Timer;
+    
+    import starling.core.Starling;
+    import starling.display.Sprite;
+    import starling.extensions.WebcamVideo;
+    import starling.textures.Texture;
+    import starling.text.TextField;
+    
+    public class WebcamTest extends Sprite
+    {
+        
+        private var webcamVideo:WebcamVideo;
+        private var statsTextField:TextField;
+        private var statsTimer:Timer = new Timer(1000, 0);
+        private var camera:Camera;
+        
+        public function WebcamTest()
+        {
+        
+            camera = Camera.getCamera();
+            camera.setLoopback(false);
+            camera.setMode(1280, 720, 15);
+        
+            webcamVideo = new WebcamVideo(camera);
+            center(webcamVideo);
+            addChild(webcamVideo);
+        
+            statsTextField = new TextField(200, 100, "CAMERA DEBUG", "Arial", 10, 0xFF00FF, true);
+            statsTextField.hAlign = "left";
+            statsTextField.vAlign = "top";
+            statsTextField.y = 26;
+            addChild(statsTextField);
+        
+            statsTimer.addEventListener(TimerEvent.TIMER, statsTimer_timerHandler);
+            statsTimer.start();
+            
+        }
+        
+        private function center(wv:WebcamVideo):void
+        {
+            wv.height = Starling.current.stage.stageHeight;
+            wv.scaleX = wv.scaleY;
+            wv.x = (Starling.current.stage.stageWidth - wv.width) * .5;
+            wv.y = (Starling.current.stage.stageHeight - wv.height) * .5;
+            wv.flipHorizontal = wv.camera.position != CameraPosition.BACK;
+        }
+        
+        
+        private function statsTimer_timerHandler(e:TimerEvent):void {
+            statsTextField.text = "FPS:\t" + camera.currentFPS.toFixed(1) + "/" + camera.fps.toFixed(1)
+            + "\ncam:\t" + camera.width + "x" + camera.height
+            + "\ntextureClass: " + webcamVideo.texture.root.base
+            + "\ntexture:\t" + webcamVideo.texture.root.nativeWidth + "x" +  webcamVideo.texture.root.nativeHeight
+            + "\ndraw:\t" + webcamVideo.drawTime.toFixed(2) + " ms"
+            + "\nupload:\t" + webcamVideo.uploadTime.toFixed(2) + " ms"
+            + "\ncomplete:\t" + (webcamVideo.drawTime+webcamVideo.uploadTime).toFixed(2)+" ms";
+        }
+    }
+}
+         </pre></div>
+		 		 </div><div class="detailBody">In versions Flash 11.7 / AIR 3.7 and below make sure to use a clipping Rect and adjust the strategy, e.g. like this:
+		 <div class="listing"><pre>
+camera.setMode(640, 640, 15);
+var cropping:Rectangle = new Rectangle(0, 0, getLowerPowerOfTwo(camera.width), getLowerPowerOfTwo(camera.height));
+webcamVideo = new WebcamVideo(camera, new Rectangle( (camera.width-cropping.width)*.5, (camera.height-cropping.height)*.5, cropping.width, cropping.height), true, WebcamVideo.DRAW_BITMAPDATA|WebcamVideo.UPLOAD_FROM_BITMAPDATA);
+         </pre></div>
+		 		 </div><div class="detailBody">Full example (Flash 11.7 / AIR 3.7 and below):
+		 <div class="listing"><pre>
+package {
+    import flash.geom.Rectangle;
+    import flash.media.CameraPosition;
+    import flash.media.Camera;
+    import flash.events.TimerEvent;
+    import flash.utils.Timer;
+    
+    import starling.core.Starling;
+    import starling.display.Sprite;
+    import starling.extensions.WebcamVideo;
+    import starling.textures.Texture;
+    import starling.text.TextField;
+    
+    public class WebcamTest extends Sprite {
+        
+        private var webcamVideo:WebcamVideo;
+        private var statsTextField:TextField;
+        private var statsTimer:Timer = new Timer(1000, 0);
+        private var camera:Camera;
+        
+        public function WebcamTest() {
+            
+            camera = Camera.getCamera();
+            camera.setLoopback(false);
+            camera.setMode(640, 640, 15);
+            var cropping:Rectangle = new Rectangle(0, 0, getLowerPowerOfTwo(camera.width), getLowerPowerOfTwo(camera.height));
+            webcamVideo = new WebcamVideo(camera, new Rectangle( (camera.width-cropping.width)*.5, (camera.height-cropping.height)*.5, cropping.width, cropping.height), true, WebcamVideo.DRAW_BITMAPDATA|WebcamVideo.UPLOAD_FROM_BITMAPDATA);
+            center(webcamVideo);
+            addChild(webcamVideo);
+            
+            statsTextField = new TextField(200, 100, "CAMERA DEBUG", "Arial", 10,  0xFF00FF, true);
+            statsTextField.hAlign = "left";
+            statsTextField.vAlign = "top";
+            statsTextField.y = 26;
+            addChild(statsTextField);
+            
+            statsTimer.addEventListener(TimerEvent.TIMER, statsTimer_timerHandler);
+            statsTimer.start();
+        
+        }
+        private function getLowerPowerOfTwo(val:int):int {
+            var result:int = 1;
+            val >>= 1;
+            while (val) {
+            val >>= 1;
+            result <<= 1;
+            }
+            return result;
+        }
+        
+        private function center(wv:WebcamVideo):void {
+            wv.height = Starling.current.stage.stageHeight;
+            wv.scaleX = wv.scaleY;
+            wv.x = (Starling.current.stage.stageWidth - wv.width) * .5;
+            wv.y = (Starling.current.stage.stageHeight - wv.height) * .5;
+            wv.flipHorizontal = wv.camera.position != CameraPosition.BACK;
+        }
+        
+        private function statsTimer_timerHandler(e:TimerEvent):void {
+            statsTextField.text = "FPS:\t" + camera.currentFPS.toFixed(1) + "/" + camera.fps.toFixed(1)
+            + "\ncam:\t" + camera.width + "x" + camera.height
+            + "\ntextureClass: " + webcamVideo.texture.root.base
+            + "\ntexture:\t" + webcamVideo.texture.root.nativeWidth + "x" +  webcamVideo.texture.root.nativeHeight
+            + "\ndraw:\t" + webcamVideo.drawTime.toFixed(2) + " ms"
+            + "\nupload:\t" + webcamVideo.uploadTime.toFixed(2) + " ms"
+            + "\ncomplete:\t" + (webcamVideo.drawTime+webcamVideo.uploadTime).toFixed(2)+" ms";
+        }
+    }
+}
+         </pre></div>
+		 </div></div><a name="methodDetail"></a><div class="detailSectionHeader">Method Detail</div><a name="copyVertexDataTo()"></a><a name="copyVertexDataTo(starling.utils.VertexData,int)"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">copyVertexDataTo</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td></tr></table><div class="detailBody"><code>override public function copyVertexDataTo(targetData:VertexData, targetVertexID:int = 0):void</code><p></p><p></p><p> Copies the raw vertex data to a VertexData instance.
+		  The texture coordinates are already in the format required for rendering. </p><p><span class="label"> Parameters </span><table cellpadding="0" cellspacing="0" border="0"><tr><td width="20px"></td><td><code><span class="label">targetData</span>:VertexData</code></td></tr><tr><td class="paramSpacer">&nbsp;</td></tr><tr><td width="20px"></td><td><code><span class="label">targetVertexID</span>:int</code> (default = <code>0</code>)<code></code></td></tr></table></p></div><a name="dispose()"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">dispose</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>override public function dispose():void</code><p></p><p></p><p> Disposes all resources of the WebcamVideo Object.
+		  Detaches the camera, removes EventListeners, disposes textures and bitmapDatas.
+		 </p></div><a name="draw()"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">draw</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code> public function draw():void</code><p></p><p></p><p>
+		 Drawing the camera image to the BitmapData/ByteArray, according to the chosen strategy.
+		 </p><p><span class="label">See also</span></p><div class="seeAlso"><a href="WebcamVideo.html" target="">WebcamVideo</a></div></div><a name="onVertexDataChanged()"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">onVertexDataChanged</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>override protected function onVertexDataChanged():void</code><p></p><p></p><p> </p></div><a name="pause()"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">pause</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code> public function pause():void</code><p></p><p></p><p> Pauses the Video EventListeners (drawing/uploading) but the camera will stay active.
+		  </p><p><span class="label">See also</span></p><div class="seeAlso">start()<br/>stop()</div></div><a name="readjustSize()"></a><a name="readjustSize(flash.geom.Rectangle)"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">readjustSize</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code> public function readjustSize(rectangle:Rectangle = null):void</code><p></p><p></p><p> Readjusts the dimensions of the video according to the current camera/croppingFrame. Call this method to synchronize
+		  video and texture size after assigning another resolution with camera.setMode().
+		  Further it resets drawnFrames, uploadedFrames as well as drawTime and uploadTime values.
+		  This method is also called on start(), stop(), pause()
+		 </p><p><span class="label"> Parameters </span><table cellpadding="0" cellspacing="0" border="0"><tr><td width="20px"></td><td><code><span class="label">rectangle</span>:Rectangle</code> (default = <code>null</code>)<code></code></td></tr></table></p></div><a name="render()"></a><a name="render(starling.core.RenderSupport,Number)"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">render</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>override public function render(support:RenderSupport, parentAlpha:Number):void</code><p></p><p></p><p> </p><p><span class="label"> Parameters </span><table cellpadding="0" cellspacing="0" border="0"><tr><td width="20px"></td><td><code><span class="label">support</span>:RenderSupport</code></td></tr><tr><td class="paramSpacer">&nbsp;</td></tr><tr><td width="20px"></td><td><code><span class="label">parentAlpha</span>:Number</code></td></tr></table></p></div><a name="start()"></a><a name="start(Boolean)"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">start</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code> public function start(forceRecording:Boolean = false):void</code><p></p><p></p><p>
+		 Starting/Resuming the camera.
+		 </p><p><span class="label"> Parameters </span><table cellpadding="0" cellspacing="0" border="0"><tr><td width="20px"></td><td><code><span class="label">forceRecording</span>:Boolean</code> (default = <code>false</code>)<code></code> &mdash; 	 Starts the camera even if the WebcamVideo has not been added to stage. E.g. to use the texture
+		 in multiple Images, a ParticleSystem, with a custom renderer or whatever, instead of the WebcamVideo itself.
+		  </td></tr></table></p><p><span class="label">See also</span></p><div class="seeAlso">pause()<br/>stop()</div></div><a name="stop()"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">stop</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code> public function stop():void</code><p></p><p></p><p> Stopping the camera and EventListeners.
+		  </p><p><span class="label">See also</span></p><div class="seeAlso">pause()<br/>start()</div></div><a name="upload()"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">upload</td><td class="detailHeaderParens">()</td><td class="detailHeaderType">method</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code> public function upload():void</code><p></p><p></p><p>
+		 Uploading the BitmapData/ByteArray, according to the chosen strategy.
+		 </p><p><span class="label">See also</span></p><div class="seeAlso"><a href="WebcamVideo.html" target="">WebcamVideo</a></div></div><div class="detailSectionHeader"> Event Detail </div><a name="event:drawComplete"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">drawComplete</td><td class="detailHeaderType"> Event </td></tr></table><div class="detailBody"><span class="label">Event Object Type: </span><code>starling.extensions.events.VideoEvent</code><br/><p></p><p></p><p></p><p> Dispatched after a new frame has been drawn to BitmapData/ByteArray. </p></div><a name="event:uploadComplete"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">uploadComplete</td><td class="detailHeaderType"> Event </td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><span class="label">Event Object Type: </span><code>starling.extensions.events.VideoEvent</code><br/><p></p><p></p><p></p><p> Dispatched after a new frame has been uploaded from the BitmapData/ByteArray to texture. </p></div><a name="event:videoFrame"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">videoFrame</td><td class="detailHeaderType"> Event </td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><span class="label">Event Object Type: </span><code>starling.extensions.events.VideoEvent</code><br/><p></p><p></p><p></p><p> Dispatched when a new frame of the camera is available. </p></div><div class="detailSectionHeader">Constant Detail</div><a name="constantDetail"></a><a name="ALPHA"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">ALPHA</td><td class="detailHeaderType">Constant</td></tr></table><div class="detailBody"><code>public static const ALPHA:int = 2</code><p></p></div><a name="constantDetail"></a><a name="DRAW_BITMAPDATA"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">DRAW_BITMAPDATA</td><td class="detailHeaderType">Constant</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public static const DRAW_BITMAPDATA:int = 0</code><p></p></div><a name="constantDetail"></a><a name="DRAW_CAMERA"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">DRAW_CAMERA</td><td class="detailHeaderType">Constant</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public static const DRAW_CAMERA:int = 1</code><p></p></div><a name="constantDetail"></a><a name="OPAQUE"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">OPAQUE</td><td class="detailHeaderType">Constant</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public static const OPAQUE:int = 0</code><p></p></div><a name="constantDetail"></a><a name="UPLOAD_FROM_BITMAPDATA"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">UPLOAD_FROM_BITMAPDATA</td><td class="detailHeaderType">Constant</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public static const UPLOAD_FROM_BITMAPDATA:int = 0</code><p></p></div><a name="constantDetail"></a><a name="UPLOAD_FROM_BYTEARRAY"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">UPLOAD_FROM_BYTEARRAY</td><td class="detailHeaderType">Constant</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public static const UPLOAD_FROM_BYTEARRAY:int = 4</code><p></p></div><br/><br/><hr><br/><p></p><center class="copyright"><footer></footer><br/>Samstag Sep 7 2013, 10:55 PM +02:00  </center></div></body></html><!--<br/>Samstag Sep 7 2013, 10:55 PM +02:00  -->
