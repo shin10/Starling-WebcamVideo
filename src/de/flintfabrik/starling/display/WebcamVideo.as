@@ -55,11 +55,11 @@ package de.flintfabrik.starling.display
 	
 	
 	/** Dispatched when a new frame of the camera is available. */
-    [Event(name="videoFrame", type="starling.extensions.events.VideoEvent")]
+    [Event(name="videoFrame", type="de.flintfabrik.starling.events.VideoEvent")]
     /** Dispatched after a new frame has been drawn to BitmapData/ByteArray. */
-    [Event(name="drawComplete", type="starling.extensions.events.VideoEvent")]
+    [Event(name="drawComplete", type="de.flintfabrik.starling.events.VideoEvent")]
     /** Dispatched after a new frame has been uploaded from the BitmapData/ByteArray to texture. */
-    [Event(name="uploadComplete", type="starling.extensions.events.VideoEvent")]
+    [Event(name="uploadComplete", type="de.flintfabrik.starling.events.VideoEvent")]
     
 	
 	/** A WebcamVideo is a Quad with a texture mapped onto it.
@@ -163,6 +163,9 @@ package de.flintfabrik.starling.display
 		 * <listing version="3.8">
 package
 {
+	import de.flintfabrik.starling.display.WebcamVideo;
+	import de.flintfabrik.starling.events.VideoEvent;
+	
 	import flash.geom.Rectangle;
 	import flash.media.CameraPosition;
 	import flash.media.Camera;
@@ -171,7 +174,6 @@ package
 	
 	import starling.core.Starling;
 	import starling.display.Sprite;
-	import starling.extensions.WebcamVideo;
 	import starling.textures.Texture;
 	import starling.text.TextField;
 	
@@ -238,6 +240,9 @@ webcamVideo = new WebcamVideo(camera, new Rectangle( (camera.width-cropping.widt
 		 * @example Full example (Flash 11.7 / AIR 3.7 and below):
 		 * <listing>
 package {
+	import de.flintfabrik.starling.display.WebcamVideo;
+	import de.flintfabrik.starling.events.VideoEvent;
+	
 	import flash.geom.Rectangle;
 	import flash.media.CameraPosition;
 	import flash.media.Camera;
@@ -246,7 +251,6 @@ package {
 	
 	import starling.core.Starling;
 	import starling.display.Sprite;
-	import starling.extensions.WebcamVideo;
 	import starling.textures.Texture;
 	import starling.text.TextField;
 	
