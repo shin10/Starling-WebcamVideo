@@ -17,3 +17,11 @@ http://www.flintfabrik.de/blog/camera-performance-with-stage3d
 http://www.flintfabrik.de/blog/webcam-performance-with-stage3d-part-ii-rectangletextures-in-air-3-8-beta
 
 http://www.flintfabrik.de/blog/webcam-performance-with-stage3d-part-iii-rectangletextures-in-air-3-8-beta-mobile
+
+
+LIVE DEMO
+=========
+Some info, example code and live demo on my blog:
+http://www.flintfabrik.de/blog/starling-webcamvideo-extension
+
+live chat (demo with filters for real time postprocessing): www.flintfabrik.de/pgs/starlingVideoChat/
