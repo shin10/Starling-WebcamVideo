@@ -750,6 +750,18 @@ package {
 		}
 		
 		/**
+		 * Stops the WebcamVideo, sets the new camera object with optional cropping rectangle and restarts recording if it has been active before.
+		 */
+		public function setCamera(camera:Camera, rect:Rectangle = null):void
+		{
+			var recording:Boolean = mRecording;
+			stop();
+			mCamera = camera;
+			readjustSize(rect);
+			if(recording) start(mForceRecording);
+		}
+		
+		/**
 		 * Returns a Boolean whether the context is available or not (e.g. disposed)
 		 * @return
 		 */
